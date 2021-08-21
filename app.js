@@ -11,16 +11,17 @@ const main = async () => {
   const data = await bucket.getFiles();
 
   console.log(`全ファイル数: ${data[0].length}`);
-  data[0].map(m => {
+
+  for (let m of data[0]) {
     const now = new Date().getTime();
     const timeCreated = new Date(m.metadata.timeCreated);
 
     if ((now - timeCreated) / 1000 > Number(process.env.DEADLINE)) {
-      bucket.file(m.metadata.name).delete();
+      await bucket.file(m.metadata.name).delete();
     }
 
     console.log(m.metadata.name);
-  });
+  }
 };
 
 main();
